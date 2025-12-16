@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmlbg8vdwq538"]
+
+[ext_resource type="Texture2D" uid="uid://bai8vhryq1ykw" path="res://Simple cat.png" id="1_wtcfe"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="SimpleCat" type="Sprite2D" parent="."]
+position = Vector2(489.25, 290)
+scale = Vector2(23.093752, 22.249998)
+texture = ExtResource("1_wtcfe")
