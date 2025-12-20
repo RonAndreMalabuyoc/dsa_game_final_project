@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dl6d3lwiivjxg"]
+
+[ext_resource type="Texture2D" uid="uid://da04xuyf0km73" path="res://Fall (32x32).png" id="1_48ufq"]
+[ext_resource type="Script" uid="uid://d21uqdkatiumi" path="res://main_character.gd" id="1_wmkwl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wmkwl"]
+size = Vector2(59, 80)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = ExtResource("1_wmkwl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(28, 38)
+scale = Vector2(2.75, 3.375)
+texture = ExtResource("1_48ufq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(29.5, 52)
+shape = SubResource("RectangleShape2D_wmkwl")
