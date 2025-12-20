@@ -213,7 +213,7 @@ tile_set = SubResource("TileSet_q6r6c")
 [node name="main_character" parent="." instance=ExtResource("3_epypp")]
 position = Vector2(242, 313)
 
-[node name="muzzle" type="Marker2D" parent="main_character"]
+[node name="Muzzle" type="Marker2D" parent="main_character"]
 
 [node name="Projectiles" type="Area2D" parent="."]
 script = ExtResource("4_0hol4")
@@ -222,8 +222,8 @@ script = ExtResource("4_0hol4")
 
 [node name="Sprite2D" type="Sprite2D" parent="Projectiles"]
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Pick-up" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pick-up"]
 
-[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Pick-up"]
