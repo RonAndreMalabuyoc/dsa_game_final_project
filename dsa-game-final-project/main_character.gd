@@ -45,6 +45,7 @@ func _physics_process(delta: float) -> void:
 func shoot() -> void:
 	if not can_shoot:
 		return
+	print("SHOOT CALLED")
 
 	can_shoot = false
 
