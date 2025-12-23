@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://bmlbg8vdwq538"]
+[gd_scene load_steps=11 format=4 uid="uid://bmlbg8vdwq538"]
 
 [ext_resource type="Texture2D" uid="uid://dk4spknv8m3e1" path="res://assets/Full_bgx32.png" id="1_0hol4"]
 [ext_resource type="Texture2D" uid="uid://ctd5xxvgiufnm" path="res://Terrain (16x16).png" id="2_epypp"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dl6d3lwiivjxg" path="res://main_character.tscn" id="3_epypp"]
 [ext_resource type="Script" uid="uid://cccilmvgmxtbp" path="res://projectiles.gd" id="4_0hol4"]
 [ext_resource type="Script" uid="uid://cx8hujvj3jmow" path="res://pick_up.gd" id="5_q6r6c"]
+[ext_resource type="PackedScene" uid="uid://buhcwc5fd7jh1" path="res://scenes/rooster.tscn" id="7_d21ai"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0hol4"]
 texture = ExtResource("2_epypp")
@@ -1079,3 +1080,6 @@ position = Vector2(2, 47)
 [node name="Camera2D" type="Camera2D" parent="Pick-up/Node2D"]
 position = Vector2(191, 267)
 position_smoothing_enabled = true
+
+[node name="Node2D" parent="." instance=ExtResource("7_d21ai")]
+position = Vector2(718, 320)
