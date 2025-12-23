@@ -1,38 +1,52 @@
-[gd_scene load_steps=21 format=3 uid="uid://dl6d3lwiivjxg"]
+[gd_scene load_steps=37 format=3 uid="uid://dl6d3lwiivjxg"]
 
+[ext_resource type="Texture2D" uid="uid://bm5w7ih0ujtsx" path="res://assets/winning_dance-Sheet.png" id="1_2q423"]
 [ext_resource type="Texture2D" uid="uid://b24tj1r88ew7v" path="res://assets/idle_right-Sheet.png" id="1_48ufq"]
 [ext_resource type="Texture2D" uid="uid://drv57nqyv7011" path="res://assets/jump_right-Sheet.png" id="2_uvl38"]
 [ext_resource type="Texture2D" uid="uid://hwt4xidve3gm" path="res://assets/walk_right-Sheet.png" id="2_wmkwl"]
+[ext_resource type="Texture2D" uid="uid://diac6d70kknhf" path="res://assets/shoot_duck-Sheet.png" id="4_8yqgs"]
 
 [sub_resource type="GDScript" id="GDScript_48ufq"]
 resource_name = "Movement"
 script/source = "extends CharacterBody2D
 
-@export var speed := 300
+@export var speed := 400
 @export var jump_force := -600
 @export var gravity := 1200
 
 @onready var sprite := $AnimatedSprite2D
+
+var is_dancing := false
 
 func _physics_process(delta):
 	# Gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Jump
-	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+	# Jump (disabled while dancing)
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor() and not is_dancing:
 		velocity.y = jump_force
-		sprite.play(\"jump\")
 
-	# Horizontal movement
-	var direction := Input.get_axis(\"ui_left\", \"ui_right\")
+	# Dance input
+	if Input.is_action_pressed(\"dance\") and is_on_floor():
+		is_dancing = true
+	else:
+		is_dancing = false
+
+	# Horizontal movement (disabled while dancing)
+	var direction := 0.0
+	if not is_dancing:
+		direction = Input.get_axis(\"ui_left\", \"ui_right\")
+
 	velocity.x = direction * speed
 
 	if direction != 0:
 		sprite.flip_h = direction < 0
 
-	# Animation logic
-	if not is_on_floor():
+	if is_dancing:
+		if sprite.animation != \"dance\":
+			sprite.play(\"dance\")
+	elif not is_on_floor():
 		if velocity.y < 0:
 			if sprite.animation != \"jump\":
 				sprite.play(\"jump\")
@@ -49,6 +63,30 @@ func _physics_process(delta):
 
 	move_and_slide()
 "
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qthh5"]
+atlas = ExtResource("1_2q423")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vudk"]
+atlas = ExtResource("1_2q423")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k7f46"]
+atlas = ExtResource("1_2q423")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wtyc1"]
+atlas = ExtResource("1_2q423")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wevls"]
+atlas = ExtResource("1_2q423")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8013f"]
+atlas = ExtResource("1_2q423")
+region = Rect2(160, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wmkwl"]
 atlas = ExtResource("1_48ufq")
@@ -94,6 +132,38 @@ region = Rect2(192, 0, 32, 32)
 atlas = ExtResource("2_uvl38")
 region = Rect2(224, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_y5ku0"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lwrfi"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_niowr"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wut41"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s5efc"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j7y71"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gum7p"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dt07w"]
+atlas = ExtResource("4_8yqgs")
+region = Rect2(224, 0, 32, 32)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_wcpx6"]
 atlas = ExtResource("2_wmkwl")
 region = Rect2(0, 0, 32, 32)
@@ -108,6 +178,29 @@ region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_wcpx6"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qthh5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vudk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k7f46")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wtyc1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wevls")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8013f")
+}],
+"loop": true,
+"name": &"dance",
+"speed": 8.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_wmkwl")
@@ -153,6 +246,35 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_y5ku0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lwrfi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_niowr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wut41")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s5efc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j7y71")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gum7p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dt07w")
+}],
+"loop": true,
+"name": &"shoot",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_wcpx6")
 }, {
 "duration": 1.0,
@@ -177,8 +299,8 @@ script = SubResource("GDScript_48ufq")
 position = Vector2(179.5, 405.5)
 scale = Vector2(3.15625, 3.21875)
 sprite_frames = SubResource("SpriteFrames_wcpx6")
-animation = &"walk"
-frame_progress = 0.15259945
+animation = &"shoot"
+frame_progress = 0.03346624
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(184, 418)
