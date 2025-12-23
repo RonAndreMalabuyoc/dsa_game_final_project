@@ -1,6 +1,54 @@
-[gd_scene load_steps=10 format=3 uid="uid://dl6d3lwiivjxg"]
+[gd_scene load_steps=24 format=3 uid="uid://dl6d3lwiivjxg"]
 
 [ext_resource type="Texture2D" uid="uid://b24tj1r88ew7v" path="res://assets/idle_right-Sheet.png" id="1_48ufq"]
+[ext_resource type="Texture2D" uid="uid://drv57nqyv7011" path="res://assets/jump_right-Sheet.png" id="2_uvl38"]
+[ext_resource type="Texture2D" uid="uid://hwt4xidve3gm" path="res://assets/walk_right-Sheet.png" id="2_wmkwl"]
+
+[sub_resource type="GDScript" id="GDScript_48ufq"]
+resource_name = "Movement"
+script/source = "extends CharacterBody2D
+
+@export var speed := 200
+@export var jump_force := -600
+@export var gravity := 1200
+
+@onready var sprite := $AnimatedSprite2D
+
+func _physics_process(delta):
+	# Gravity
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+	# Jump
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+		velocity.y = jump_force
+		sprite.play(\"jump\")
+
+	# Horizontal movement
+	var direction := Input.get_axis(\"ui_left\", \"ui_right\")
+	velocity.x = direction * speed
+
+	if direction != 0:
+		sprite.flip_h = direction < 0
+
+	# Animation logic
+	if not is_on_floor():
+		if velocity.y < 0:
+			if sprite.animation != \"jump\":
+				sprite.play(\"jump\")
+		else:
+			if sprite.animation != \"fall\":
+				sprite.play(\"fall\")
+	else:
+		if direction != 0:
+			if sprite.animation != \"walk\":
+				sprite.play(\"walk\")
+		else:
+			if sprite.animation != \"idle\":
+				sprite.play(\"idle\")
+
+	move_and_slide()
+"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wmkwl"]
 atlas = ExtResource("1_48ufq")
@@ -26,6 +74,50 @@ region = Rect2(128, 0, 32, 32)
 atlas = ExtResource("1_48ufq")
 region = Rect2(160, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_qthh5"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vudk"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k7f46"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_47qjj"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dypn8"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_07ek2"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kg3iu"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mjyag"]
+atlas = ExtResource("2_uvl38")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wcpx6"]
+atlas = ExtResource("2_wmkwl")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u3evn"]
+atlas = ExtResource("2_wmkwl")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5q0wt"]
+atlas = ExtResource("2_wmkwl")
+region = Rect2(64, 0, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_wcpx6"]
 animations = [{
 "frames": [{
@@ -48,22 +140,67 @@ animations = [{
 "texture": SubResource("AtlasTexture_2v62t")
 }],
 "loop": true,
-"name": &"Idle",
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qthh5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vudk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k7f46")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_47qjj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dypn8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_07ek2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kg3iu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mjyag")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wcpx6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u3evn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5q0wt")
+}],
+"loop": true,
+"name": &"walk",
 "speed": 6.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u3evn"]
-radius = 10.049875
+radius = 34.0
 
 [node name="Node2D" type="CharacterBody2D"]
 z_index = 5
+script = SubResource("GDScript_48ufq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(179.5, 405.5)
+scale = Vector2(3.15625, 3.21875)
 sprite_frames = SubResource("SpriteFrames_wcpx6")
-animation = &"Idle"
-autoplay = "Idle"
-frame_progress = 0.051716093
+animation = &"jump"
+frame_progress = 0.9187964
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 5)
+position = Vector2(184, 418)
 shape = SubResource("CircleShape2D_u3evn")
