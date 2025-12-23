@@ -10,7 +10,7 @@ var can_shoot := true
 
 var facing_dir := Vector2.RIGHT
 
-
+print("Hello world")
 const SPEED = 300.0
 const JUMP_VELOCITY = -600.0
 
