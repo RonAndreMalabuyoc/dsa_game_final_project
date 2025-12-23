@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dl6d3lwiivjxg"]
+[gd_scene load_steps=21 format=3 uid="uid://dl6d3lwiivjxg"]
 
 [ext_resource type="Texture2D" uid="uid://b24tj1r88ew7v" path="res://assets/idle_right-Sheet.png" id="1_48ufq"]
 [ext_resource type="Texture2D" uid="uid://drv57nqyv7011" path="res://assets/jump_right-Sheet.png" id="2_uvl38"]
@@ -8,7 +8,7 @@
 resource_name = "Movement"
 script/source = "extends CharacterBody2D
 
-@export var speed := 200
+@export var speed := 300
 @export var jump_force := -600
 @export var gravity := 1200
 
@@ -74,18 +74,6 @@ region = Rect2(128, 0, 32, 32)
 atlas = ExtResource("1_48ufq")
 region = Rect2(160, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_qthh5"]
-atlas = ExtResource("2_uvl38")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1vudk"]
-atlas = ExtResource("2_uvl38")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_k7f46"]
-atlas = ExtResource("2_uvl38")
-region = Rect2(64, 0, 32, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_47qjj"]
 atlas = ExtResource("2_uvl38")
 region = Rect2(96, 0, 32, 32)
@@ -141,18 +129,9 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 6.0
+"speed": 8.0
 }, {
 "frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qthh5")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1vudk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_k7f46")
-}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_47qjj")
 }, {
@@ -198,8 +177,8 @@ script = SubResource("GDScript_48ufq")
 position = Vector2(179.5, 405.5)
 scale = Vector2(3.15625, 3.21875)
 sprite_frames = SubResource("SpriteFrames_wcpx6")
-animation = &"jump"
-frame_progress = 0.9187964
+animation = &"walk"
+frame_progress = 0.15259945
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(184, 418)
