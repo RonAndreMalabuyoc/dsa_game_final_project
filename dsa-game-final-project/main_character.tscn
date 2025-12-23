@@ -1,10 +1,13 @@
 HEAD
 HEAD
+HEAD
 [gd_scene load_steps=46 format=3 uid="uid://dl6d3lwiivjxg"]
 
 [gd_scene load_steps=37 format=3 uid="uid://dl6d3lwiivjxg"]
 parent of d641fd7 (Added Shooting)
 
+[gd_scene load_steps=37 format=3 uid="uid://dl6d3lwiivjxg"]
+parent of d641fd7 (Added Shooting)
 [gd_scene load_steps=37 format=3 uid="uid://dl6d3lwiivjxg"]
 parent of d641fd7 (Added Shooting)
 
@@ -33,6 +36,7 @@ func _physics_process(delta):
 
 HEAD
 HEAD
+HEAD
 	# Horizontal movement
 	var direction := 0.0
 	if not is_dancing:
@@ -44,6 +48,9 @@ HEAD
 		facing_right = direction > 0
 
 	# Jump
+
+	# Jump (disabled while dancing)
+parent of d641fd7 (Added Shooting)
 
 	# Jump (disabled while dancing)
 parent of d641fd7 (Added Shooting)
