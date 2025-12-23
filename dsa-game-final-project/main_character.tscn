@@ -1,8 +1,12 @@
-<<<<<<< HEAD
+HEAD
+HEAD
 [gd_scene load_steps=46 format=3 uid="uid://dl6d3lwiivjxg"]
-=======
+
 [gd_scene load_steps=37 format=3 uid="uid://dl6d3lwiivjxg"]
->>>>>>> parent of d641fd7 (Added Shooting)
+parent of d641fd7 (Added Shooting)
+
+[gd_scene load_steps=37 format=3 uid="uid://dl6d3lwiivjxg"]
+parent of d641fd7 (Added Shooting)
 
 [ext_resource type="Texture2D" uid="uid://bm5w7ih0ujtsx" path="res://assets/winning_dance-Sheet.png" id="1_2q423"]
 [ext_resource type="Texture2D" uid="uid://b24tj1r88ew7v" path="res://assets/idle_right-Sheet.png" id="1_48ufq"]
@@ -27,7 +31,8 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-<<<<<<< HEAD
+HEAD
+HEAD
 	# Horizontal movement
 	var direction := 0.0
 	if not is_dancing:
@@ -39,9 +44,12 @@ func _physics_process(delta):
 		facing_right = direction > 0
 
 	# Jump
-=======
+
 	# Jump (disabled while dancing)
->>>>>>> parent of d641fd7 (Added Shooting)
+parent of d641fd7 (Added Shooting)
+
+	# Jump (disabled while dancing)
+parent of d641fd7 (Added Shooting)
 	if Input.is_action_just_pressed(\"jump\") and is_on_floor() and not is_dancing:
 		velocity.y = jump_force
 
