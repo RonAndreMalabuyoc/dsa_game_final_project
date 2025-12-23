@@ -78,9 +78,9 @@ animations = [{
 script = SubResource("GDScript_osi2b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(289.5, 141)
-scale = Vector2(4.7812505, 4.125)
+position = Vector2(320.5, 166)
+scale = Vector2(2.8437505, 2.5625)
 sprite_frames = SubResource("SpriteFrames_lbbeg")
 animation = &"walk"
 autoplay = "walk"
-frame_progress = 0.7605148
+frame_progress = 0.3912606
