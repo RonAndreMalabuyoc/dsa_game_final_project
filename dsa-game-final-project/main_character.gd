@@ -38,6 +38,8 @@ func _physics_process(delta: float) -> void:
 		facing_dir = Vector2.LEFT
 	elif direction > 0:
 		facing_dir = Vector2.RIGHT
+# if direction == 0 → do NOTHING, keep last facing
+
 		
 	if Input.is_action_just_pressed("shoot"):
 		shoot()

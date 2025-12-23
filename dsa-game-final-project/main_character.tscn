@@ -1,8 +1,7 @@
-[gd_scene load_steps=47 format=3 uid="uid://dl6d3lwiivjxg"]
+[gd_scene load_steps=46 format=3 uid="uid://dl6d3lwiivjxg"]
 
 [ext_resource type="Texture2D" uid="uid://bm5w7ih0ujtsx" path="res://assets/winning_dance-Sheet.png" id="1_2q423"]
 [ext_resource type="Texture2D" uid="uid://b24tj1r88ew7v" path="res://assets/idle_right-Sheet.png" id="1_48ufq"]
-[ext_resource type="PackedScene" uid="uid://hha6lbsgo15e" path="res://scenes/Bullet.tscn" id="1_jw0ju"]
 [ext_resource type="Texture2D" uid="uid://drv57nqyv7011" path="res://assets/jump_right-Sheet.png" id="2_uvl38"]
 [ext_resource type="Texture2D" uid="uid://hwt4xidve3gm" path="res://assets/walk_right-Sheet.png" id="2_wmkwl"]
 [ext_resource type="Texture2D" uid="uid://diac6d70kknhf" path="res://assets/shoot_duck-Sheet.png" id="4_8yqgs"]
@@ -12,78 +11,115 @@
 resource_name = "Movement"
 script/source = "extends CharacterBody2D
 
-@export var bullet_scene: PackedScene
-@export var speed := 400
-@export var jump_force := -600
-@export var gravity := 1200
-@export var shoot_cooldown := 0.3  # seconds between shots
+# ---------- Movement ----------
+@export var move_speed: float = 260.0
+@export var jump_velocity: float = -520.0
 
-@onready var sprite := $AnimatedSprite2D
-@onready var shoot_point := $ShootPoint
+var gravity: float = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
 
-var is_dancing := false
-var facing_right := true
-var can_shoot := true
+# ---------- Shooting ----------
+@export var normal_projectile_scene: PackedScene
+@export var special_projectiles: Dictionary = {
+	# Example entries (edit paths to yours)
+	# \"bomb\": preload(\"res://projectiles/BombProjectile.tscn\"),
+	# \"ice\": preload(\"res://projectiles/IceProjectile.tscn\"),
+}
 
-func _physics_process(delta):
-	# Gravity
+@export var shoot_cooldown: float = 0.15
+var can_shoot: bool = true
+
+# Stack of special shots
+var shot_stack: Array[String] = []
+
+# Direction the player is facing (only changes when you move)
+var facing_dir: Vector2 = Vector2.RIGHT
+
+@onready var muzzle: Marker2D = $Muzzle
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D   # change if your node name differs
+
+
+func _physics_process(delta: float) -> void:
+	# ----- Gravity -----
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Horizontal movement
-	var direction := 0.0
-	if not is_dancing:
-		direction = Input.get_axis(\"ui_left\", \"ui_right\")
-	velocity.x = direction * speed
+	# ----- Horizontal movement -----
+	var axis := Input.get_axis(\"ui_left\", \"ui_right\")  # -1 left, +1 right, 0 none
+	velocity.x = axis * move_speed
 
-	# Update facing based on movement if NOT shooting
-	if direction != 0 and not Input.is_action_pressed(\"shoot\"):
-		facing_right = direction > 0
+	# Update facing ONLY when player actually presses a direction
+	# This prevents \"snap to right\" when you stop moving or when you shoot.
+	if axis < 0:
+		facing_dir = Vector2.LEFT
+	elif axis > 0:
+		facing_dir = Vector2.RIGHT
 
-	# Jump
-	if Input.is_action_just_pressed(\"jump\") and is_on_floor() and not is_dancing:
-		velocity.y = jump_force
+	# ----- Jump -----
+	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
+		velocity.y = jump_velocity
 
-	# Dance
-	is_dancing = Input.is_action_pressed(\"dance\") and is_on_floor()
-
-	# Shoot (left click) with cooldown
-	if Input.is_action_pressed(\"shoot\") and can_shoot and not is_dancing:
+	# ----- Shoot -----
+	if Input.is_action_just_pressed(\"shoot\"):
 		shoot()
-		var mouse_pos = get_global_mouse_position()
-		facing_right = mouse_pos.x > global_position.x
-		can_shoot = false
-		# Start cooldown timer
-		await get_tree().create_timer(shoot_cooldown).timeout
-		can_shoot = true
-
-	# Apply sprite flip once per frame
-	sprite.flip_h = not facing_right
-
-	# Animations
-	if Input.is_action_pressed(\"shoot\") and not is_dancing:
-		sprite.play(\"shoot\")
-	elif is_dancing:
-		sprite.play(\"dance\")
-	elif not is_on_floor():
-		if velocity.y < 0:
-			sprite.play(\"jump\")
-	else:
-		if direction != 0:
-			sprite.play(\"walk\")
-		else:
-			sprite.play(\"idle\")
 
 	move_and_slide()
 
-# Shoot bullet
-func shoot():
-	if bullet_scene == null or shoot_point == null:
+	# ----- Visual flip (after movement) -----
+	# flip_h = true usually means facing left for most sprites
+	anim.flip_h = (facing_dir == Vector2.LEFT)
+
+
+# Called by pickup: push then autoshoot
+func push_and_autoshoot(item_id: String) -> void:
+	shot_stack.push_back(item_id)
+	shoot()
+
+
+func shoot() -> void:
+	if not can_shoot:
 		return
-	var bullet = bullet_scene.instantiate()
-	bullet.global_position = shoot_point.global_position
-	bullet.direction = Vector2.RIGHT if facing_right else Vector2.LEFT
-	get_parent().add_child(bullet)
+	if normal_projectile_scene == null and shot_stack.is_empty():
+		return
+
+	can_shoot = false
+
+	if shot_stack.size() > 0:
+		var item_id: String = shot_stack.pop_back()
+		_fire_special(item_id)
+	else:
+		_fire_normal()
+
+	await get_tree().create_timer(shoot_cooldown).timeout
+	can_shoot = true
+
+
+func _fire_normal() -> void:
+	if normal_projectile_scene == null:
+		return
+	var proj := normal_projectile_scene.instantiate()
+	_spawn_projectile(proj, facing_dir)
+
+
+func _fire_special(item_id: String) -> void:
+	if not special_projectiles.has(item_id):
+		_fire_normal()
+		return
+
+	var proj_scene: PackedScene = special_projectiles[item_id]
+	var proj := proj_scene.instantiate()
+	_spawn_projectile(proj, facing_dir)
+
+
+func _spawn_projectile(proj: Node, dir: Vector2) -> void:
+	# Add to current scene so it exists independently of the player
+	get_tree().current_scene.add_child(proj)
+
+	if proj is Node2D:
+		proj.global_position = muzzle.global_position
+
+	# Pass direction to projectile
+	if proj.has_method(\"setup\"):
+		proj.call(\"setup\", dir)
 "
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qthh5"]
@@ -377,9 +413,9 @@ radius = 34.0
 [node name="Node2D" type="CharacterBody2D"]
 z_index = 5
 script = SubResource("GDScript_48ufq")
-bullet_scene = ExtResource("1_jw0ju")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
 position = Vector2(179.5, 405.5)
 scale = Vector2(3.15625, 3.21875)
 sprite_frames = SubResource("SpriteFrames_wcpx6")
